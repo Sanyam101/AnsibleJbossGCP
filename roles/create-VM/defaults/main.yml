@@ -1,0 +1,5 @@
+machine_type: n1-standard-1 # default
+image: centos-7
+service_account_email: sahiltuli87@gmail.com
+credentials_file: /home/sahiltuli87/My First Project-43890851b4bc.json
+project_id: evident-gecko-179112

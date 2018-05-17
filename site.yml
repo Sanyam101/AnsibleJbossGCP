@@ -1,0 +1,9 @@
+---
+- hosts: all
+  sudo: yes
+
+  roles: 
+   - create-VM
+   - test-machine
+   - { role: jboss-standalone, become: true }
+   - deploywar

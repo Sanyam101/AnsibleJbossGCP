@@ -1,0 +1,3 @@
+---
+- include: tasks.yml
+  delegate_to: "{{ new_IP  }}"

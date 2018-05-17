@@ -1,0 +1,73 @@
+  - name: fetch machine name
+    command: "hostname"
+    regsiter: name
+
+  - name: echo machine name
+    debug: 
+      var: name
+
+  - name: Add group {{ jbossUser }}
+    group: name="jboss"
+
+  - name: Create user {{ jbossUser }} and add to {{ jbossUser }} group
+    user: name="jboss" group="jboss"
+    become: True
+
+  - name: What if we use yum_repository?
+    yum_repository:
+       baseurl: https://dl.fedoraproject.org/pub/epel/7Server/x86_64/
+       description: "Epel release."
+       name: epel-release
+       state: present
+    become: True
+ 
+  - name: update yum
+    command: "hostname"
+    register: name
+
+
+#  - name: install system updates for centos systems
+#    yum: name=* state=latest update_cache=yes 
+ 
+  #- name: upgrade all packages
+  #  yum: 
+  #    list: available
+  #  register: avail
+
+  - debug: 
+      var: name
+
+  - name: Ensure unzip is installed
+    yum: name={{item}} state=present
+    with_items:
+      - unzip
+      - java-1.6.0-openjdk
+    become: True
+
+  - name: Download JBoss from url and unzip archive to "/usr/jboss"
+    unarchive: src="http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip" dest="/usr/share" remote_src=yes
+
+  - name: change ownership
+    file:
+      path: "/usr/share/jboss-as-7.1.1.Final"
+      state: directory
+      owner: jboss
+      group: jboss
+      mode: 0777
+      recurse: yes
+    become: yes
+
+  - name: Creating Admin User
+    shell: "/usr/share/jboss-as-7.1.1.Final/bin/add-user.sh --silent=true jboss admin"
+    become: True
+    become_user: jboss
+
+  - name: Start jboss
+    shell: "/usr/share/jboss-as-7.1.1.Final/bin/standalone.sh -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0 >/dev/null 2>&1 &"
+    become: True
+    become_user: jboss
+    async: 2592000
+    poll: 0
+  #- name: sleep for 30 seconds and continue with play
+  #  wait_for: timeout=30
+

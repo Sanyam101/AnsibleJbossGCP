@@ -1,0 +1,9 @@
+---
+- name: Configure
+  hosts: webserver
+  become: true
+  command: "hostanme"
+  register: bame
+ 
+- debug:
+   var: bame

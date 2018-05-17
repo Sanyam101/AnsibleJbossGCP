@@ -1,0 +1,17 @@
+---
+
+- name: Transfer file from ServerA to ServerB
+  synchronize:
+      src: /home/sahiltuli87/LoginWebApp.war
+      dest: /tmp
+      mode: pull
+  delegate_to: "{{ new_IP  }}"
+  become: True
+#- name: Copy application WAR file to host
+#  copy: src=/root/.jenkins/workspace/CodeFetch/target/LoginWebApp.war dest=/tmp
+#  become: True
+#  delegate_to: "{{ new_IP  }}"
+
+- name: Deploy HelloWorld to JBoss
+  jboss: deploy_path=/usr/share/jboss-as-7.1.1.Final/standalone/deployments/ src=/tmp/LoginWebApp.war deployment=LoginWebApp.war state=present
+  delegate_to: "{{ new_IP  }}"

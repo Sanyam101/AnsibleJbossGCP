@@ -1,0 +1,10 @@
+---
+- name: Copy application WAR file to host
+  copy: 
+    src=/home/sahiltuli87/LoginWebApp.war
+    dest=/usr/share/jboss-as-7.1.1.Final/standalone/deployments
+  become: True
+  delegate_to: "{{ new_IP  }}"
+
+#- name: Deploy HelloWorld to JBoss
+#  jboss: deploy_path=/usr/share/jboss-as-7.1.1.Final/standalone/deployments/ src=/tmp/LoginWebApp.war deployment=LoginWebApp.war state=present

@@ -1,0 +1,6 @@
+---
+
+- include: tasks.yml
+
+- include: posttasks.yml
+    hosts="new_instances"

@@ -1,0 +1,8 @@
+- name: fetch machine name
+  command: "hostname"
+  regsiter: name
+
+- name: echo machine name
+  debug: 
+    var: name
+

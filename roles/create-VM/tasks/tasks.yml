@@ -1,0 +1,34 @@
+    - name: Launch instances
+      gce:
+          instance_names: centos-test27
+          machine_type: "{{ machine_type }}"
+          image: "{{ image }}"
+          service_account_email: "{{ service_account_email }}"
+          credentials_file: "{{ credentials_file }}"
+          project_id: "{{ project_id }}"
+          tags: webserver
+      register: gce
+
+    - name: Wait for SSH to come up
+      wait_for: host={{ item.public_ip }} port=22 delay=10 timeout=60
+      with_items: "{{ gce.instance_data }}"
+
+    - name: Add host to groupname
+     # add_host: hostname={{ item.public_ip }} groupname=new_instances
+      add_host: name={{ item.public_ip }} groups=new_instances
+      with_items: "{{ gce.instance_data }}"
+  
+    - name: fetch new IP ad
+      set_fact:
+         new_IP={{ item.public_ip }}
+      with_items: "{{ gce.instance_data }}"
+
+    - name: Manage new instances
+      hosts: new_instances
+      connection: ssh
+      sudo: True
+      command: "hostname"
+     
+    - name: show new machine_Ip
+      debug:
+         var: new_IP
